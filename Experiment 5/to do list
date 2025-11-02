@@ -1,0 +1,113 @@
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
+
+const App = () => {
+  const [task, setTask] = useState('');
+  const [todoList, setTodoList] = useState([]);
+
+  const addTask = () => {
+    if (task.trim() !== '') {
+      setTodoList([...todoList, { id: Date.now().toString(), text: task }]);
+      setTask('');
+    }
+  };
+
+  const deleteTask = (id) => {
+    setTodoList(todoList.filter((item) => item.id !== id));
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>Todo List</Text>
+
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="Enter a task"
+          value={task}
+          onChangeText={setTask}
+          style={styles.input}
+          placeholderTextColor="#999"
+        />
+        <Button title="Add" onPress={addTask} />
+      </View>
+
+      <FlatList
+        data={todoList}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.taskItem}>
+            <Text style={styles.taskText}>{item.text}</Text>
+            <TouchableOpacity onPress={() => deleteTask(item.id)}>
+              <Text style={styles.deleteText}>❌</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>No tasks yet. Add one!</Text>
+        }
+      />
+    </View>
+  );
+};
+
+export default App;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 60,
+    paddingHorizontal: 20,
+    backgroundColor: '#1a1a1a',
+  },
+  header: {
+    color: 'white',
+    fontSize: 36,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  input: {
+    flex: 1,
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginRight: 10,
+    height: 40,
+  },
+  taskItem: {
+    backgroundColor: '#333',
+    padding: 15,
+    marginBottom: 10,
+    borderRadius: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  taskText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  deleteText: {
+    color: 'red',
+    fontSize: 18,
+  },
+  emptyText: {
+    color: '#888',
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
+  },
+});
